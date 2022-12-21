@@ -1,0 +1,50 @@
+version: "3"
+services:
+  promtail:
+    image: grafana/promtail:latest
+    container_name: logging-promtail
+    volumes:
+      - ./promtail/promtail-docker-config.yml:/etc/promtail/docker-config.yaml # configuration I made:config saved in container
+      - ../logs/RollingFile.log:/var/log/RollingFile.log # log we want to save:log in promtail
+    command: "--config.file=/etc/promtail/docker-config.yaml"
+  loki:
+    image: grafana/loki:latest # think of this as a database for your logs
+    container_name: logging-loki
+    # volumes:
+    #   - ./loki/loki-config.yml:/etc/config/loki.yml
+    ports:
+      - 3100:3100
+  grafana:
+    image: grafana/grafana:latest # default username/password:admin/password
+    container_name: logging-grafana
+    volumes:
+      - grafana-data:/var/lib/grafana
+    # persisting grafana settings
+    ports:
+      - 3000:3000
+    depends_on:
+      - loki
+  prometheus:
+    image: prom/prometheus:latest # think of this as your database for your metrics over time
+    ports:
+      - 9090:9090
+    volumes:
+      # - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/etc/prometheus # passing the directory instead of just the config file for prometheus
+      - prometheus-data:/prometheus
+    container_name: logging-prometheus
+  # alertmanager:
+  #   image: prom/alertmanager:latest # this lets us create triggers to automate messages based on application metrics
+  #   volumes:
+  #     - ./alertmanager:/etc/alertmanager
+  #   command:
+  #     - '--config.file=/etc/alertmanager/alertmanager.yml'
+  #     - '--storage.path=/alertmanager'
+  #   ports:
+  #     - 9093:9093
+  #   container_name: logging-alertmanager
+volumes:
+  grafana-data:
+    driver: local
+  prometheus-data:
+    driver: local

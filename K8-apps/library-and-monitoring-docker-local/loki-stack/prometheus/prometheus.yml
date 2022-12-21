@@ -1,0 +1,24 @@
+global:
+  scrape_interval:     15s
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
+      #alert manager
+
+rule_files:
+  - rules.yml # this is why alert manager rules yml is inside prometheus directory
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: 
+        - prometheus:9090
+  - job_name: library
+    metrics_path: /actuator/prometheus # this endpoit is added by micrometer dependency in app
+    static_configs:
+      - targets:
+        - host.docker.internal:8080 # this tells prometheus to target port 8080 of the machine running docker
+        # if this was part of 1 docker compose file we could target the container we want itself

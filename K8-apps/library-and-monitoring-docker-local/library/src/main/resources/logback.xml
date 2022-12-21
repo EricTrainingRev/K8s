@@ -1,0 +1,73 @@
+<configuration>
+
+  <!-- this pattern was taken From Matt Os repository -->
+  <property name="CUSTOM_MDC_LOG_PATTERN" value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} [ %mdc ] %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+
+
+    <!-- this appender can be used to send logs to the console -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      </encoder>
+    </appender>
+
+    <!-- this appender can be used to send logs to file in the resources folder. It will NOT role to a new file -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+      <file>logs/logs.log</file>
+      <append>true</append>
+      <encoder>
+          <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+      </encoder>
+  </appender>
+
+  <!-- this appender can be used to set up rolling logs in the resource folder -->
+  <property name="LOG_FILE" value="RollingFile" />
+  <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>logs/${LOG_FILE}.log</file>
+      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+          <!-- daily rollover -->
+          <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+          <!-- keep 30 days' worth of history capped at 3GB total size -->
+          <maxHistory>30</maxHistory>
+          <totalSizeCap>3GB</totalSizeCap>
+      </rollingPolicy>
+      <!-- <encoder>
+              - we could manually create this encoder pattern, or we can let LogstashEncoder handle making easilt
+              - parseable jsons logs for us
+          <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+      </encoder> -->
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <includeMdcKeyName>REMOTE_ADDRESS</includeMdcKeyName>
+        <includeMdcKeyName>METHOD</includeMdcKeyName>
+        <includeMdcKeyName>URI</includeMdcKeyName>
+        <includeMdcKeyName>PARAMETERS</includeMdcKeyName>
+      </encoder>
+  </appender> 
+
+
+    <!-- this logger will send any log messages to the ROLLINGFILE appender -->
+    <logger name="com.revature.library.controller" level="info">
+      <appender-ref ref="ROLLING"/>
+    </logger>
+    <!-- this logger will send any log messsages to the ROLLINGFILE appender -->
+    <logger name="org.hibernate.SQL" level="debug">
+      <appender-ref ref="ROLLING"/>
+    </logger>
+    <logger name="com.revature.library.service.BookServiceImp">
+      <appender-ref ref="ROLLING"/>
+    </logger>
+
+
+
+    <!-- 
+        The root tag below provides the default settings ALL loggers will inherit if they do not recieve explicit
+        instructions from us. Note that Spring Boot comes with LogBack provided and can be configured using the 
+        application.properties file.
+
+        Currently, the root logger sets the default logging level to info and sends the logs to the console.
+     -->
+  
+    <root level="info"> 
+      <appender-ref ref="STDOUT" />
+    </root>
+  </configuration>

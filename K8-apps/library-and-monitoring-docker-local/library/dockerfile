@@ -1,0 +1,12 @@
+# indicates the base image
+FROM openjdk:11-jdk-slim
+# FROM openjdk:8-jdk-alpine
+
+# tells docker what directory to use as the root directory (any copied files will go here)
+# WORKDIR /library/target
+
+# tells docker what file to copy into the image we are creating AND what to name it
+COPY target/library-0.0.1-SNAPSHOT.jar app.jar
+
+# tells docker what command to run when we want to execute our app
+ENTRYPOINT ["java","-jar","app.jar"]
