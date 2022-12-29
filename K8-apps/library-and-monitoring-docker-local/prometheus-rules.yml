@@ -1,0 +1,19 @@
+groups:
+- name: example
+  rules:
+
+  # Alert for any instance that is unreachable for >5 minutes.
+  - alert: InstanceDown
+    expr: up == 0
+    for: 5m
+    labels:
+      severity: warn
+    annotations:
+      summary: " sports down"
+      description: "job sports has been down for more than 5 minutes."
+
+  - alert: APIHighRequestLatency:5min
+    expr: sum(rate(http_server_requests_seconds_sum{job="sports"}[5m])) / sum(rate(http_server_requests_seconds_count{job="sports"}[5m])) > 0.2
+    annotations:
+      summary: "High request latency on sports job (5 minute range)"
+      description: "sports has an average latency above 200 miliseconds over a 5 minute range (current value: {{ $value }}s)"
