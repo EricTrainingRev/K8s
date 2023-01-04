@@ -15,7 +15,7 @@ spec:
   #     maxUnavailable: 0
   selector:
     matchLabels:
-      app: "sports-pod"
+      pod: "sports-pod"
   template:
     metadata:
       labels:
