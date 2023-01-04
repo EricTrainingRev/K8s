@@ -1,0 +1,37 @@
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "library-service"
+  namespace: "default"
+  labels:
+    app: "library-service"
+spec:
+  ports:
+  - name: http
+    protocol: "TCP"
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: "library-app"
+  type: "ClusterIP"
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: library-service-monitor
+  # namespace: default 
+  labels:
+    release: prometheus
+    # team: rss-account-service
+spec:
+  jobLabel: library-app
+  selector:
+    matchLabels:
+      app: library-service
+  namespaceSelector:
+    matchNames: 
+    - default
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 10s

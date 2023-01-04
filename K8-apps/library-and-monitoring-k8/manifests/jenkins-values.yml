@@ -1,0 +1,12 @@
+
+controller:
+  adminPassword: "password"
+  jenkinsUriPrefix: "/jenkins"
+  ingress:
+    enabled: true
+    paths: []
+    apiVersion: networking.k8s.io/v1
+    ingressClassName: nginx
+    path: "/jenkins"
+    hostName:
+    tls:
