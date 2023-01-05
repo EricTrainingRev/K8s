@@ -4,7 +4,7 @@ metadata:
   name: postgres-pod
   namespace: default
   labels:
-    app: postgres
+    pod: postgres
 spec:
   containers:
   - name: postgres-container

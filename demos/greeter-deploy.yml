@@ -1,0 +1,44 @@
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "greeter-deployment"
+  namespace: "default"
+  labels:
+    deployment: "greeter-deployment"
+spec:
+  replicas: 3
+  # # minReadySeconds: 5
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 1
+  #     maxUnavailable: 0
+  selector:
+    matchLabels:
+      pod: "greeter-pod"
+  template:
+    metadata:
+      labels:
+        pod: "greeter-pod"
+    spec:
+      # terminationGracePeriodSeconds: 30
+      containers:
+      - name: "greeter-app"
+        image: "esuminski/english:fixed"
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        # env:
+        # - name: SPRING_DATASOURCE_URL
+        #   value: jdbc:postgresql://postgres-service:5432/default_database # could also do jdbc:postgresql://postgres-service.default.svc.cluster.local:5432/default_database this way should not be dependent on creation order
+        # - name: SPRING_DATASOURCE_USERNAME
+        #   value: username
+        # - name: SPRING_DATASOURCE_PASSWORD
+        #   value: password
+        volumeMounts:
+          - mountPath: /logs
+            name: logs
+
+      volumes:
+        - name: logs
+          # emptyDir: {}
