@@ -11,4 +11,4 @@ helm upgrade --install nginx ingress-nginx/ingress-nginx
 helm upgrade --install prometheus prometheus-community/kube-prometheus-stack -f manifests/prometheus-grafana-values.yml
 
 # set up basic jenkins app
-helm upgrade --install jenkins jenkins/jenkins -f manifests/jenkins-values.yml
+# helm upgrade --install jenkins jenkins/jenkins -f manifests/jenkins-values.yml

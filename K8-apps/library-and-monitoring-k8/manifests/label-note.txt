@@ -1,0 +1,4 @@
+have your labels match in manifests: makes it easier to ensure resources communicate with each other (and you
+don't reference a pod instead of a service)
+
+another useful label is for labeling environments: test, dev, prod, etc

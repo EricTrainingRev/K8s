@@ -1,17 +1,9 @@
-# prometheusOperator:
-#   enabled: false
-prometheus:
+prometheus: # datasource: http://prometheus-kube-prometheus-prometheus.default:9090/
   prometheusSpec:
     # serviceMonitorNamespaceSelector: {default}
     serviceMonitorSelector: #{library-service-monitor}
       matchLabels:
         release: prometheus
-
-nodeExporter:
-  enabled: false
-
-kubeStateMetrics:
-  enabled: false
 
 grafana:
     namespaceOverride: "default"

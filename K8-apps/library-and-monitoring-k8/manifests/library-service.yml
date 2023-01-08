@@ -27,10 +27,10 @@ spec:
   jobLabel: library-app
   selector:
     matchLabels:
-      app: library-service
-  namespaceSelector:
-    matchNames: 
-    - default
+      app: library-service #THIS IS LOOKING AT THE SERVICE, IT'S A SERVICE MONITOR!
+  # namespaceSelector:
+  #   matchNames: 
+  #   - default
   endpoints:
   - port: http
     path: /actuator/prometheus

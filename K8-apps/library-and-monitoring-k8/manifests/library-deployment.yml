@@ -4,7 +4,7 @@ metadata:
   name: "library-deployment"
   namespace: "default"
   labels:
-    app: "library-app"
+    deployment: "library-deployment"
 spec:
   replicas: 3
   # minReadySeconds: 5
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: "library-app"
+        app: library-app
     spec:
       terminationGracePeriodSeconds: 30
       containers:
