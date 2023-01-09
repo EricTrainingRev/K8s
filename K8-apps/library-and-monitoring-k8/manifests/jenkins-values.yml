@@ -1,12 +1,38 @@
-
 controller:
-  adminPassword: "password"
+  # ideally you would specify plugin versions
+  installPlugins:
+  - kubernetes
+  - workflow-aggregator
+  - git
+  - configuration-as-code
+  - docker-workflow
+  - workflow-aggregator
+  - github-branch-source
+  - docker-plugin
+  - pipeline-stage-view
+  - timestamper
+  - github
+  JCasC:
+    defaultConfig: true
+  # to get generated password: kubectl get secret [--namespace [namespace]] [release] -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode ; echo
+  # adminPassword: "password"
   jenkinsUriPrefix: "/jenkins"
   ingress:
     enabled: true
+    # Override for the default paths that map requests to the backend
     paths: []
     apiVersion: networking.k8s.io/v1
     ingressClassName: nginx
     path: "/jenkins"
-    hostName:
-    tls:
+agent:
+  podTemplates:
+    # will need to add more containers for kubectl commands and quality checks
+    # dind version 20+ is broken or something, might check if version 19 works, can check 20 before batch starts
+    greeting: |
+        - name: greeting
+          label: jenkins-greeting
+          serviceAccount: jenkins
+          containers:
+          - name: docker
+            image: docker:18-dind
+            privileged: true
