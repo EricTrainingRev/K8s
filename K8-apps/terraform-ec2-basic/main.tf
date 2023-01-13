@@ -44,9 +44,12 @@ resource "aws_s3_bucket" "terraform_state" {
 }
 
 # this dynamodb instance helps manage users interacting with the terraform state at the same time
+# as long as the storage of the table is below 25G it is free tier eligible
 resource "aws_dynamodb_table" "terraform_locks" {
   name         = "demo-terraform-locks"
   billing_mode = "PAY_PER_REQUEST"
+  read_capacity = 5 # below 25 is free tier eligible
+  write_capacity = 5 # below 25 is free tier eligible
   hash_key     = "LockID"
   attribute {
     name = "LockID"
